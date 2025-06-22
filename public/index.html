@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceBot - AI Financial Analyst</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'typing': 'typing 1.4s infinite ease-in-out',
+                        'typing-delay-1': 'typing 1.4s infinite ease-in-out 0.32s',
+                        'typing-delay-2': 'typing 1.4s infinite ease-in-out 0.16s'
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        typing: {
+                            '0%, 80%, 100%': { transform: 'scale(0)' },
+                            '40%': { transform: 'scale(1)' }
+                        }
+                    },
+                    backdropBlur: {
+                        xs: '2px'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-blue-900 to-blue-800 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/10 backdrop-blur-md border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-2 rounded-lg">
+                        <i class="fas fa-chart-line text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">FinanceBot</h1>
+                        <p class="text-sm text-blue-200">AI Financial Analyst</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-white">Gemma Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <!-- Sidebar with Tools -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-tools mr-2"></i>Tools
+                    </h3>
+                    <div class="space-y-3">
+                        <button onclick="addQuickPrompt('Analyze Apple stock performance in the last quarter')" 
+                                class="w-full text-left p-3 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-white transition-colors">
+                            <i class="fas fa-chart-bar mr-2"></i>Stock Analysis
+                        </button>
+                        <button onclick="addQuickPrompt('Explain the main economic indicators of Europe today')" 
+                                class="w-full text-left p-3 rounded-lg bg-green-600/20 hover:bg-green-600/30 text-white transition-colors">
+                            <i class="fas fa-flag mr-2"></i>Economic Indicators
+                        </button>
+                        <button onclick="addQuickPrompt('Suggest a diversified portfolio for a investor')" 
+                                class="w-full text-left p-3 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-white transition-colors">
+                            <i class="fas fa-briefcase mr-2"></i>Investment Portfolio
+                        </button>
+                        <button onclick="addQuickPrompt('Analyze risks and opportunities in the cryptocurrency market')" 
+                                class="w-full text-left p-3 rounded-lg bg-orange-600/20 hover:bg-orange-600/30 text-white transition-colors">
+                            <i class="fab fa-bitcoin mr-2"></i>Cryptocurrencies
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Session Metrics -->
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-white mb-4">
+                        <i class="fas fa-chart-bar mr-2"></i>Session Metrics
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-cyan-600/20 p-3 rounded-lg" data-metric="messages">
+                            <div class="text-sm text-cyan-300">Messages Sent</div>
+                            <div class="text-lg font-bold text-white value">0</div>
+                            <div class="text-xs text-cyan-400">this session</div>
+                        </div>
+                        <div class="bg-blue-600/20 p-3 rounded-lg" data-metric="time">
+                            <div class="text-sm text-blue-300">Session Time</div>
+                            <div class="text-lg font-bold text-white value">0m</div>
+                            <div class="text-xs text-blue-400">active time</div>
+                        </div>
+                        <div class="bg-indigo-600/20 p-3 rounded-lg" data-metric="images">
+                            <div class="text-sm text-indigo-300">Images Processed</div>
+                            <div class="text-lg font-bold text-white value">0</div>
+                            <div class="text-xs text-indigo-400">files sent</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chat -->
+            <div class="lg:col-span-3">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl h-[735px] flex flex-col">
+                    
+                    <!-- Chat Header -->
+                    <div class="p-6 border-b border-white/10">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Financial Assistant</h2>
+                                <p class="text-blue-200">Powered by Gemma 3 - Advanced Financial Analysis</p>
+                            </div>
+                            <button onclick="clearChat()" class="text-white hover:text-red-400 transition-colors">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4">
+                        <!-- Welcome Message -->
+                        <div class="flex items-start space-x-3 animate-slide-in">
+                            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-2 rounded-full">
+                                <i class="fas fa-robot text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-blue-600/20 rounded-lg p-4">
+                                    <p class="text-white">
+                                        👋 Hello! I'm your specialized financial assistant. I can help with:
+                                    </p>
+                                    <ul class="mt-2 text-blue-200 text-sm">
+                                        <li>• Investment and portfolio analysis</li>
+                                        <li>• Economic indicator interpretation</li>
+                                        <li>• Diversification strategies</li>
+                                        <li>• Risk and opportunity analysis</li>
+                                        <li>• Personalized financial education</li>
+                                    </ul>
+                                    <p class="mt-2 text-white">How can I help you today?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="p-6 border-t border-white/10">
+                        <div class="flex space-x-4">
+                            <div class="flex-1 relative">
+                                <input 
+                                    type="text" 
+                                    id="messageInput" 
+                                    placeholder="Type your financial question..."
+                                    class="w-full bg-slate-800/80 text-white placeholder-gray-400 rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onkeypress="handleKeyPress(event)"
+                                >
+                            </div>
+                            <button onclick="document.getElementById('imageInput').click()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all" title="Attach image">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="previewImage(event)">
+                            <button onclick="sendMessage()" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div id="imagePreview" class="mt-2 hidden">
+                            <div class="relative inline-block">
+                                <img id="previewImg" class="max-h-32 rounded-lg border border-white/20" alt="Image preview">
+                                <button onclick="removeImage()" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
